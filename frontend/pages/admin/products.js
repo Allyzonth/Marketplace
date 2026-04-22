@@ -37,11 +37,16 @@ export default function AdminProductsPage() {
   };
 
   useEffect(() => {
-    if (!isAdminLoggedIn()) {
-      router.replace('/admin/login');
-      return;
-    }
-    loadProducts();
+    const checkAdmin = async () => {
+      const loggedIn = await isAdminLoggedIn();
+      if (!loggedIn) {
+        router.replace('/admin/login');
+        return;
+      }
+      loadProducts();
+    };
+
+    checkAdmin();
   }, [router]);
 
   const handleChange = (e) => {
@@ -90,7 +95,7 @@ export default function AdminProductsPage() {
       resetForm();
       await loadProducts();
     } catch (err) {
-      setError(err?.response?.data?.message || 'Gagal menyimpan produk');
+      setError(err?.message || 'Gagal menyimpan produk');
       console.error(err);
     } finally {
       setSaving(false);
@@ -106,13 +111,13 @@ export default function AdminProductsPage() {
       await deleteProduct(id);
       await loadProducts();
     } catch (err) {
-      setError(err?.response?.data?.message || 'Gagal menghapus produk');
+      setError(err?.message || 'Gagal menghapus produk');
       console.error(err);
     }
   };
 
-  const handleLogout = () => {
-    adminLogout();
+  const handleLogout = async () => {
+    await adminLogout();
     router.push('/admin/login');
   };
 

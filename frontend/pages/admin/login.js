@@ -6,25 +6,25 @@ import { adminLogin } from '@/lib/api';
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!username || !password) {
-      setError('Username dan password wajib diisi');
+    if (!email || !password) {
+      setError('Email dan password wajib diisi');
       return;
     }
 
     try {
       setLoading(true);
       setError('');
-      await adminLogin(username, password);
+      await adminLogin(email, password);
       router.push('/admin/products');
     } catch (err) {
-      setError(err?.response?.data?.message || 'Login admin gagal');
+      setError(err?.message || 'Login admin gagal');
     } finally {
       setLoading(false);
     }
@@ -42,10 +42,10 @@ export default function AdminLoginPage() {
           {error && <div className="mb-4 text-red-700 bg-red-50 border border-red-200 rounded p-3">{error}</div>}
           <form onSubmit={handleSubmit} className="space-y-4">
             <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Username admin"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email admin"
               className="w-full border rounded-lg px-4 py-2"
             />
             <input
